@@ -15,4 +15,14 @@ describe 'Video' do
 
     expect(v.category.name).to eq('Dramas')
   end
+
+  it 'should require title' do
+    v = Video.new( description: "Some description" )
+    expect(v.save).to be false
+  end
+
+  it 'should require description' do
+    v = Video.new( title: "Title 1" )
+    expect(v.save).to be false
+  end
 end
