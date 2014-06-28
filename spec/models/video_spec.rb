@@ -6,7 +6,7 @@ describe Video do
   it { should validate_presence_of(:description) }
   it { should belong_to(:category) }
 
-  describe '#search_by_title' do
+  describe 'search_by_title' do
     let(:v1) { Video.create( title: "Amazing Spiderman", description: "This is a description 1.", created_at: Time.now - 1 ) }
     let(:v2) { Video.create( title: "Amazing Superman", description: "This is a description 2.", created_at: Time.now ) }
     let(:v3) { Video.create( title: "Inception", description: "This is a description 3.", created_at: Time.now + 1) }
