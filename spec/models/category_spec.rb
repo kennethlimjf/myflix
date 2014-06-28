@@ -9,13 +9,11 @@ describe 'Category' do
   end
 
   it 'should be able to contain many videos' do
-    v1 = Video.create( title: "Video 1", description: "This is a description for video 1." )
-    v2 = Video.create( title: "Video 2", description: "This is a description for video 2." )
-
     c = Category.create( name: "News" )
-    c.videos << v1
-    c.videos << v2
 
-    expect(c.videos.count).to eq(2)
+    v1 = Video.create( title: "Z Video", description: "This is a description for video 1.", category: c )
+    v2 = Video.create( title: "A Video", description: "This is a description for video 2.", category: c )
+
+    expect(c.videos).to eq([v2, v1])
   end
 end
