@@ -7,20 +7,18 @@ describe Video do
   it { should belong_to(:category) }
 
   describe '#search_by_title' do
-    before do
-      @v1 = Video.create( title: "Amazing Spiderman", description: "This is a description 1." )
-      @v2 = Video.create( title: "Amazing Superman", description: "This is a description 2." )
-      @v3 = Video.create( title: "Inception", description: "This is a description 3." )
-    end
+    let(:v1) { Video.create( title: "Amazing Spiderman", description: "This is a description 1.", created_at: Time.now - 1 ) }
+    let(:v2) { Video.create( title: "Amazing Superman", description: "This is a description 2.", created_at: Time.now ) }
+    let(:v3) { Video.create( title: "Inception", description: "This is a description 3.", created_at: Time.now + 1) }
 
     it 'should return an array of one video for an exact match' do
       results = Video.search_by_title( "Inception" )
-      expect(results).to eq([@v3])
+      expect(results).to eq([v3])
     end
 
-    it 'should return array of videos with that contains the search term' do
+    it 'should return array of videos with that contains the search term ordered by created_at desc' do
       results = Video.search_by_title( "man" )
-      expect(results).to include( @v1, @v2 )
+      expect(results).to eq( [v2, v1] )
     end
 
     it 'should return an empty array if no match with search term' do
