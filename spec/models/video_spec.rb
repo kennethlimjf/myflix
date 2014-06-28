@@ -27,6 +27,11 @@ describe Video do
       results = Video.search_by_title( "haha" )
       expect(results).to eq([])
     end
+
+    it 'returns an empty array if the search term is an empty string' do
+      results = Video.search_by_title( "" )
+      expect(results).to eq([])
+    end
   end
 
 end

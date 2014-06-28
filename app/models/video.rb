@@ -3,6 +3,6 @@ class Video < ActiveRecord::Base
   validates_presence_of :title, :description
 
   def self.search_by_title(search_term)
-    self.where("title LIKE ?", "%#{search_term}%")
+    (search_term.empty?) ? [] : self.where("title LIKE ?", "%#{search_term}%")
   end
 end
