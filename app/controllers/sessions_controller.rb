@@ -1,15 +1,16 @@
 class SessionsController < ApplicationController
 
   def new
+    redirect_to home_path if current_user
   end
 
   def create
     
-    @user = User.find_by(email: params[:email]).try(:authenticate, params[:password])
+    user = User.find_by(email: params[:email]).try(:authenticate, params[:password])
 
-    if @user
+    if user
       reset_session
-      session[:user_id] = @user.id
+      session[:user_id] = user.id
       flash[:notice] = "You have successfully signed in."  
       redirect_to home_path
     else
