@@ -1,4 +1,6 @@
 class VideosController <ApplicationController
+  before_action :authorize_user
+
   def show
     @video = Video.find(params[:id])
   end

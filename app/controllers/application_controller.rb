@@ -9,4 +9,13 @@ class ApplicationController < ActionController::Base
   def logged_in?
     !!current_user
   end
+
+
+  protected
+    def authorize_user
+      unless logged_in?
+        flash[:notice] = "You will need to sign in first."
+        redirect_to sign_in_path
+      end
+    end
 end
