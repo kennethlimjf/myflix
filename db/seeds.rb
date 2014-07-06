@@ -187,6 +187,12 @@ Video.create( title: "Ip Man 3",
 Category.create( name: "Oldies" )
 
 # Reviews
-reviews = 10.times.map { Fabricate(:review) }
-v1.reviews = reviews
-v1.save
+Video.first(2).each do |video|
+  [3,4,5].sample.times.map { Fabricate(:review, video: video, author: User.first) }
+end
+
+
+# Queue Items
+Video.first(5).each do |video|
+  q = Fabricate(:queue_item, video: video, user: User.first)
+end

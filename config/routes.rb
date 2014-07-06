@@ -18,6 +18,10 @@ Myflix::Application.routes.draw do
     resources :reviews, only: :create
   end
 
+  # Queue Items
+  get 'my-queue', to: 'queue_items#index', as: :my_queue
+  resources :queue_items, only: :destroy
+
   # Session
   get 'sign-in', to: 'sessions#new', as: :sign_in
   post 'sign-in', to: 'sessions#create'

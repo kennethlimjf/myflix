@@ -2,6 +2,7 @@ class Video < ActiveRecord::Base
   belongs_to :category
   has_many :reviews, -> { order("created_at DESC") }
   validates_presence_of :title, :description
+  has_many :queue_items
 
   def self.search_by_title(search_term)
     (search_term.empty?) ? [] : where("title LIKE ?", "%#{search_term}%").order('created_at DESC')
