@@ -4,7 +4,7 @@ User.create( email: "admin@admin.com", password: "adminadmin", full_name: "Admin
 # Category 1: TV Dramas
 c1 = Category.create( name: "TV Dramas" )
 
-Video.create( title: "Family Guy",
+v1 = Video.create( title: "Family Guy",
               description: "Family Guy is an American adult animated sitcom create\
                             d by Seth MacFarlane for the Fox Broadcasting Company.\
                              The series centers on the Griffins, a family consisti\
@@ -185,3 +185,8 @@ Video.create( title: "Ip Man 3",
 
 # Category 4: 
 Category.create( name: "Oldies" )
+
+# Reviews
+reviews = 10.times.map { Fabricate(:review) }
+v1.reviews = reviews
+v1.save
