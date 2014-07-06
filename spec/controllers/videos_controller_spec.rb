@@ -15,6 +15,10 @@ describe VideosController do
         get :show, id: video.id
         expect(assigns(:video)).to eq video
       end
+      it 'sets new review record variable for form' do
+        get :show, id: video.id
+        expect(assigns(:review)).to be_new_record
+      end
     end
 
     context "when user is not authenticated" do
