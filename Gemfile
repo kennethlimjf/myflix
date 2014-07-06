@@ -22,6 +22,8 @@ end
 group :development, :test do
   gem 'rspec-rails', '= 2.99'
   gem 'shoulda-matchers', require: false
+  gem 'fabrication'
+  gem 'faker'
 end
 
 group :test do
