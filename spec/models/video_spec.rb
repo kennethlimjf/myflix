@@ -5,7 +5,7 @@ describe Video do
   it { should validate_presence_of(:title) }
   it { should validate_presence_of(:description) }
   it { should belong_to(:category) }
-  it { should have_many :reviews }
+  it { should have_many(:reviews).order("created_at DESC") }
 
   describe 'search_by_title' do
     let(:v1) { Video.create( title: "Amazing Spiderman", description: "This is a description 1.", created_at: Time.now - 1 ) }

@@ -36,7 +36,7 @@ describe ReviewsController do
 
       context 'when inputs are invalid' do
         it 'flash error' do
-          post :create, video_id: video.id, review: Fabricate.attributes_for(:review)
+          post :create, video_id: video.id, review: { rating: 4, body: nil }
           expect(flash[:error]).not_to be_nil
         end
         it 'sets the @review rating variable if available' do
