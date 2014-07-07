@@ -13,8 +13,17 @@ class QueueItemsController < ApplicationController
       flash[:notice] = "Video has been added to your queue."
       redirect_to my_queue_path
     else
-      flash[:error] = "Some error has occurred in the process. Please try again."
-      render 'videos/show'
+      flash[:error] = @queue_item.errors.first.last
+      redirect_to video_path(@video)
     end
+  end
+
+  def destroy
+    q = QueueItem.find(params[:id]) 
+    if current_user.queue_items.include?(q)
+      QueueItem.destroy(params[:id])
+      current_user.queue_items.each_with_index { |q, i| q.update_attribute(:list_order, i+1); }
+    end
+    redirect_to my_queue_path
   end
 end

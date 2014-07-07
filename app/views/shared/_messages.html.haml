@@ -1,6 +1,12 @@
-- if flash[:notice]
+- if flash[:notice] || flash[:error]
   .row
     .col-md-12
-      %div(class="alert alert-success")
-        %a.close(data-dismiss='alert') &#215;
-        = content_tag :div, flash[:notice], :id => "flash_notice" if flash[:notice].is_a?(String)
+      - if flash[:notice].is_a?(String)
+        %div(class="alert alert-success")
+          %a.close(data-dismiss='alert') &#215;
+          = content_tag :div, flash[:notice], :id => "flash_notice"
+      - if flash[:error].is_a?(String)
+        %div(class="alert alert-danger")
+          %a.close(data-dismiss='alert') &#215;
+          = content_tag :div, flash[:error], :id => "flash_error"
+        

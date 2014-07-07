@@ -4,7 +4,7 @@ class QueueItem < ActiveRecord::Base
   validates_presence_of :list_order
   validates_presence_of :video
   validates_presence_of :user
-  validates_uniqueness_of :video, scope: :user_id
+  validates_uniqueness_of :video, scope: :user_id, message: "You have already added this video in your queue."
 
   delegate :title, to: :video, prefix: :video
   delegate :category, to: :video
