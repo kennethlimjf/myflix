@@ -4,32 +4,34 @@
       %article
         %header
           %h2 My Queue
-        %table.table
-          %thead
-            %tr
-              %th(width="10%") List Order
-              %th(width="30%") Video Title
-              %th(width="10%") Play
-              %th(width="20%") Rating
-              %th(width="15%") Genre
-              %th(width="15%") Remove
-          %tbody
-            - @queue_items.each do |qi| 
+        = form_tag update_queue_items_path, method: 'patch' do
+          %table.table
+            %thead
               %tr
-                %td
-                  %input.form-control(type="text" value="#{qi.list_order}")
-                %td
-                  = link_to qi.video_title, video_path(qi.video)
-                %td
-                  = button_to "Play", nil, class: "btn btn-default"
-                %td
-                  - if qi.user_rating
-                    = "#{pluralize(qi.user_rating, "Star")}"
-                  - else
-                    = "Unrated"
-                %td
-                  = link_to qi.category_name, category_path(qi.category)
-                %td
-                  = link_to queue_item_path(qi), method: :delete do
-                    %i.glyphicon.glyphicon-remove
-        = button_to "Update Instant Queue", nil, class: "btn btn-default"
+                %th(width="10%") List Order
+                %th(width="30%") Video Title
+                %th(width="10%") Play
+                %th(width="20%") Rating
+                %th(width="15%") Genre
+                %th(width="15%") Remove
+            %tbody
+              - @queue_items.each do |qi| 
+                %tr
+                  %td
+                    %input(type="hidden" name="queue_items[#{qi.id}]")
+                    %input.form-control(type="text" name="queue_items[#{qi.id}]" value="#{qi.list_order}")
+                  %td
+                    = link_to qi.video_title, video_path(qi.video)
+                  %td
+                    = button_to "Play", nil, class: "btn btn-default"
+                  %td
+                    - if qi.user_rating
+                      = "#{pluralize(qi.user_rating, "Star")}"
+                    - else
+                      = "Unrated"
+                  %td
+                    = link_to qi.category_name, category_path(qi.category)
+                  %td
+                    = link_to queue_item_path(qi), method: :delete do
+                      %i.glyphicon.glyphicon-remove
+          = button_tag "Update Instant Queue", class: "btn btn-default"

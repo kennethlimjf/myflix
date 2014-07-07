@@ -21,6 +21,7 @@ Myflix::Application.routes.draw do
   # Queue Items
   get 'my-queue', to: 'queue_items#index', as: :my_queue
   resources :queue_items, only: [:destroy, :create]
+  patch 'update-queue', to: 'queue_items#update_queue_items', as: :update_queue_items
 
   # Session
   get 'sign-in', to: 'sessions#new', as: :sign_in

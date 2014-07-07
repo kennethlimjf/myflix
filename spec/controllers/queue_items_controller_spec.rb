@@ -109,4 +109,44 @@ describe QueueItemsController do
     end
   end
 
+
+  describe 'PATCH update_queue_items' do
+    let(:current_user) { Fabricate(:user) }
+    let(:category) { Fabricate(:category) }
+    let(:v1) { Fabricate(:video, category: category) }
+    let(:v2) { Fabricate(:video, category: category) }
+    let(:v3) { Fabricate(:video, category: category) }
+    let(:v4) { Fabricate(:video, category: category) }
+    let(:v5) { Fabricate(:video, category: category) }
+    let(:q1) { Fabricate(:queue_item, video: v1, user: current_user, list_order: 1) }
+    let(:q2) { Fabricate(:queue_item, video: v2, user: current_user, list_order: 2) }
+    let(:q3) { Fabricate(:queue_item, video: v3, user: current_user, list_order: 3) }
+    let(:q4) { Fabricate(:queue_item, video: v4, user: current_user, list_order: 4) }
+    let(:q5) { Fabricate(:queue_item, video: v5, user: current_user, list_order: 5) }
+
+    context 'when user is authenticated' do  
+      before { session[:user_id] = current_user.id }
+      it 'redirect to my queue' do
+        patch :update_queue_items, { "queue_items"=>{"1"=>"1", "3"=>"2", "7"=>"3", "9"=>"4", "10"=>"5"} }
+        expect(response).to redirect_to my_queue_path
+      end
+
+      it 'receives params' do
+        patch :update_queue_items, { "queue_items"=>{"1"=>"1", "3"=>"2", "7"=>"3", "9"=>"4", "10"=>"5"} }
+        expect(assigns(:queue_items)).to eq ({"1"=>"1", "3"=>"2", "7"=>"3", "9"=>"4", "10"=>"5"})
+      end
+
+      it 'flash notice when inputs are valid' do
+        patch :update_queue_items, { "queue_items"=>{"1"=>"5", "3"=>"4", "7"=>"3", "9"=>"2", "10"=>"1"} }
+        expect(flash[:notice]).not_to be_nil
+      end
+
+      it 'flash error when inputs are invalid' do
+        current_user.queue_items = [q1,q2,q3,q4,q5]
+        patch :update_queue_items, { "queue_items"=>{"1"=>"5", "3"=>"5", "7"=>"5", "9"=>"2", "10"=>"1"} }
+        expect(flash[:error]).not_to be_nil
+      end
+    end
+  end
+
 end

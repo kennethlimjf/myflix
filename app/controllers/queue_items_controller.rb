@@ -26,4 +26,21 @@ class QueueItemsController < ApplicationController
     end
     redirect_to my_queue_path
   end
+
+  def update_queue_items
+    @queue_items = queue_items_params
+    result = QueueItem.update_user_queue_items!(current_user, queue_items_params)
+
+    if result
+      flash[:notice] = "Your queue has been updated."
+    else
+      flash[:error] = "There is a problem."
+    end
+    redirect_to my_queue_path
+  end
+
+  private
+    def queue_items_params
+      params.require(:queue_items).permit!
+    end
 end
