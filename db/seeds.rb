@@ -193,6 +193,6 @@ end
 
 
 # Queue Items
-Video.first(5).each do |video|
-  q = Fabricate(:queue_item, video: video, user: User.first)
+Video.first(5).each_with_index do |video, index|
+  q = Fabricate(:queue_item, video: video, user: User.first, list_order: index + 1)
 end
