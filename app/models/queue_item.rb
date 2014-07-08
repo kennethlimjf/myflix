@@ -10,9 +10,13 @@ class QueueItem < ActiveRecord::Base
 
   before_create :set_list_order
 
-  def user_rating
+  def rating
     user_review = video.reviews.order("created_at DESC").find_by(author: user)
     user_review ? user_review.rating : nil
+  end
+
+  def rating=(value)
+    video.reviews.find_by(author: user).update_attribute(:rating, value)
   end
 
   def category_name
@@ -23,15 +27,35 @@ class QueueItem < ActiveRecord::Base
     return user.queue_items if user.queue_items.empty? || user.queue_items.count == 1
 
     self.transaction do
-      positions = queue_items_params.map { |k,v| v }.uniq
+      positions = queue_items_params.map { |i| i["list_order"] }.uniq
 
+      # Update list order
       if positions.size != queue_items_params.size
         raise ActiveRecord::Rollback
       else
-        queue_items_params.each { |k,v| self.find(k).update(list_order: v) }
+        queue_items_params.each do |params|
+
+          qi = QueueItem.find(params["id"])
+          
+          # Update List order          
+          qi.update_columns( list_order: params["list_order"] )
+
+          # Update rating
+          if qi.video.reviews.find_by(author: user)
+            qi.rating = params["rating"]
+          else
+            qi.video.reviews.build(rating: params["rating"], author: qi.user, video: qi.video).save(validate: false)
+          end          
+        end
+        self.normalize(user)
         user.reload.queue_items
       end
     end
+
+  end
+
+  def self.normalize(user)
+    user.queue_items.each_with_index { |q, i| q.update_attribute(:list_order, i+1); }
   end
 
   private

@@ -18,17 +18,14 @@
               - @queue_items.each do |qi| 
                 %tr
                   %td
-                    %input(type="hidden" name="queue_items[#{qi.id}]")
-                    %input.form-control(type="text" name="queue_items[#{qi.id}]" value="#{qi.list_order}")
+                    %input(type="hidden" name="queue_items[][id]" value="#{qi.id}" )
+                    %input.form-control(type="text" name="queue_items[][list_order]" value="#{qi.list_order}")
                   %td
                     = link_to qi.video_title, video_path(qi.video)
                   %td
                     = button_to "Play", nil, class: "btn btn-default"
                   %td
-                    - if qi.user_rating
-                      = "#{pluralize(qi.user_rating, "Star")}"
-                    - else
-                      = "Unrated"
+                    = select_tag("queue_items[][rating]", options_for_select(star_options, qi.rating))
                   %td
                     = link_to qi.category_name, category_path(qi.category)
                   %td
