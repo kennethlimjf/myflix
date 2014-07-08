@@ -11,4 +11,9 @@ class User < ActiveRecord::Base
   validates_presence_of :full_name
 
   has_secure_password
+
+  def has_video_in_queue?(video)
+    queue_items.each { |queue_item| return true if queue_item.video == video }
+    false
+  end
 end

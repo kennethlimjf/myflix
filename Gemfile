@@ -24,6 +24,8 @@ group :development, :test do
   gem 'shoulda-matchers', require: false
   gem 'fabrication'
   gem 'faker'
+  gem 'capybara'
+  gem 'launchy'
 end
 
 group :test do
