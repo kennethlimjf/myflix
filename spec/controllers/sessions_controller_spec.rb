@@ -4,11 +4,12 @@ describe SessionsController do
   
   describe 'GET new' do
     it 'redirects to home_path when the user is already authenicated' do
-      session[:user_id] = Fabricate(:user).id
+      sign_in
       get :new
       expect(response).to redirect_to home_path
     end
     it 'renders the new template when user is not authenicated' do
+      sign_out
       get :new
       expect(response).to render_template :new
     end
