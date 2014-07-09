@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :authorize_user, only: :show
+
   def new
     @user = User.new
   end
@@ -13,6 +15,10 @@ class UsersController < ApplicationController
       flash[:error] = "Please fill up the form correctly"
       render :new
     end
+  end
+
+  def show
+    @user = User.find(params[:id])
   end
 
 

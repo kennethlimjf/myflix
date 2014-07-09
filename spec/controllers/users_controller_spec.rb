@@ -25,7 +25,7 @@ describe UsersController do
       end
     end
 
-    context 'when new iser form input is invalid' do
+    context 'when new user form input is invalid' do
       before { post :create, user: { email: "admin@admin.com" } }
       it 'flash error if user does not save' do
         expect(flash[:error]).to eq "Please fill up the form correctly"
@@ -39,6 +39,20 @@ describe UsersController do
       it 'renders new template if user does not save' do
         expect(response).to render_template :new
       end
+    end
+  end
+
+  describe 'GET show' do
+    let(:user) { Fabricate(:user, email: "jenny@abc.com", full_name: "Jenny", password: "password") }
+
+    it 'sets the @user variable' do
+      sign_in
+      get :show, id: user.id
+      expect(assigns(:user)).to eq user
+    end
+
+    it_behaves_like 'require sign in' do
+      let(:action) { get :show, id: user.id }
     end
   end
 

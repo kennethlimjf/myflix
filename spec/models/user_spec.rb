@@ -8,8 +8,8 @@ describe User do
   it { should validate_presence_of :password }
   it { should validate_confirmation_of :password }
   it { should validate_presence_of :full_name }
-  it { should have_many :reviews }
-  it { should have_many :queue_items }
+  it { should have_many(:reviews).order('created_at DESC') }
+  it { should have_many(:queue_items).order('list_order ASC') }
 
   let(:user) { Fabricate(:user) }
   let(:v1) { Fabricate(:video) }
@@ -52,6 +52,87 @@ describe User do
       expect(user.videos_count).to eq 3
     end
 
+  end
+
+
+  describe '#follow_users' do
+
+    it 'should return [] when not following any users' do
+      expect(user.follow_users).to eq []
+    end
+
+    it 'should return [u1] when following only u1' do
+      u1 = Fabricate(:user)
+      user.follow_users << u1
+      expect(user.follow_users).to eq [u1]
+    end
+
+    it 'should return [u2,u1] when following u2 and u1' do
+      u1, u2 = Fabricate(:user), Fabricate(:user)
+      user.follow_users << [u2, u1]
+      expect(user.follow_users).to eq [u2, u1]   
+    end
+
+  end
+
+  describe '#followers' do
+    it 'returns [] when followed by no one' do
+      expect(user.follower_users).to eq []
+    end
+    it 'returns [u1] when followed by u1' do
+      u1 = Fabricate(:user)
+      u1.follow_users << user
+      expect(user.follower_users).to eq [u1]
+    end
+  end
+
+  describe '#follow' do
+    it 'should add a follow target for user' do
+      user.follow(Fabricate(:user))
+      expect(user.follow_users.count).to eq 1
+    end 
+
+    it 'should add multiple follow target for user' do
+      user.follow(Fabricate(:user))
+      user.follow(Fabricate(:user))
+      user.follow(Fabricate(:user))
+      user.follow(Fabricate(:user))
+      user.follow(Fabricate(:user))
+      expect(user.follow_users.count).to eq 5
+    end 
+  end
+
+  describe '#unfollow' do
+    it 'allows user to unfollow a user after following a user' do
+      u1 = Fabricate(:user)
+      user.follow(u1)
+      user.unfollow(u1)
+      expect(user.follow_users.count).to eq 0  
+    end
+
+    it 'allows user to unfollow users' do
+      u1 = Fabricate(:user)
+      u2 = Fabricate(:user)
+      u3 = Fabricate(:user)
+      user.follow(u1)
+      user.follow(u2)
+      user.follow(u3)
+      user.unfollow(u1)
+      user.unfollow(u2)
+      expect(user.follow_users).to eq [u3]
+    end
+
+    it 'allows user to unfollow users which have not been followed' do
+      u1 = Fabricate(:user)
+      u2 = Fabricate(:user)
+      u3 = Fabricate(:user)
+      u4 = Fabricate(:user)
+      user.follow(u1)
+      user.follow(u2)
+      user.follow(u3)
+      user.unfollow(u4)
+      expect(user.follow_users).to eq [u1,u2,u3]   
+    end
   end
   
 end

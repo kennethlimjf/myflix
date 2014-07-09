@@ -1,5 +1,5 @@
 # User
-User.create( email: "admin@admin.com", password: "adminadmin", full_name: "Admin")
+user = User.create( email: "admin@admin.com", password: "adminadmin", full_name: "Admin")
 
 # Category 1: TV Dramas
 c1 = Category.create( name: "TV Dramas" )
@@ -196,3 +196,9 @@ end
 Video.first(5).each_with_index do |video, index|
   q = Fabricate(:queue_item, video: video, user: User.first, list_order: index + 1)
 end
+
+
+# Follows
+user.follow_users << Fabricate(:user)
+user.follow_users << Fabricate(:user)
+user.follow_users << Fabricate(:user)

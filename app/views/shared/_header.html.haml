@@ -5,7 +5,7 @@
     %ul.col-md-4.clearfix
       %li= link_to "Videos", home_path
       %li= link_to "My Queue", my_queue_path
-      %li= link_to "People"
+      %li= link_to "People", people_path
     = form_tag(search_videos_path, method: "get", class: "col-md-5 navbar-form") do
       .form-group
         %input.form-control(name="search_term" type="text" placeholder="Search for videos here")
@@ -19,8 +19,9 @@
             %b.caret
           - else
             = link_to "Sign In", sign_in_path unless logged_in?
-        %ul.dropdown-menu(role="menu" aria-labelledby="dlabel")
-          %li
-            = link_to "Account", user_path(current_user)
-            %a(href="#") Plan and Billing
-            = link_to "Sign Out", sign_out_path, method: :delete
+        - if logged_in?
+          %ul.dropdown-menu(role="menu" aria-labelledby="dlabel")
+            %li
+              = link_to "Account", user_path(current_user)
+              %a(href="#") Plan and Billing
+              = link_to "Sign Out", sign_out_path, method: :delete
