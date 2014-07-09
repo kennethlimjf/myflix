@@ -101,9 +101,24 @@ describe UsersController do
     let(:user) { Fabricate(:user) }
     after { ActionMailer::Base.deliveries.clear }
     
+    it 'flash error when no such email' do
+      post :forgot_password_submit, email: "invalid@email.com"
+      expect(flash[:error]).not_to be_nil
+    end
+
+    it 'redirect to forgot password when no such email' do
+      post :forgot_password_submit, email: "invalid@email.com"
+      expect(response).to redirect_to forgot_password_path
+    end
+
     it 'should send email to user' do  
       post :forgot_password_submit, email: user.email
       expect(ActionMailer::Base.deliveries).not_to be_empty
+    end
+
+    it 'flash notice' do
+      post :forgot_password_submit, email: user.email
+      expect(flash[:notice]).not_to be_nil
     end
 
     it 'should send the link with the token' do

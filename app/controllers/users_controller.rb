@@ -31,12 +31,18 @@ class UsersController < ApplicationController
 
   end
 
-  def forgot_password_submit    
+  def forgot_password_submit
     user = User.find_by_email(params[:email])
-    user.generate_token
-    user = user.reload
-    UserMailer.forgot_password(user).deliver
-    redirect_to root_path
+    if user
+      user.generate_token
+      user = user.reload
+      UserMailer.forgot_password(user).deliver
+      flash[:notice] = "We have sent an email to your inbox."
+      redirect_to root_path
+    else
+      flash[:error] = "There a problem with your email."
+      redirect_to forgot_password_path
+    end
   end
 
   def reset_password
@@ -61,12 +67,5 @@ class UsersController < ApplicationController
   private
     def user_params
       params.require(:user).permit(:email, :password, :full_name)
-    end
-
-    def require_sign_out
-      if logged_in?
-        flash[:notice] = "You need to sign out first"
-        redirect_to root_path
-      end
     end
 end

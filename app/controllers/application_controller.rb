@@ -18,4 +18,11 @@ class ApplicationController < ActionController::Base
         redirect_to sign_in_path
       end
     end
+
+    def require_sign_out
+      if logged_in?
+        flash[:notice] = "You need to sign out first"
+        redirect_to root_path
+      end
+    end
 end
