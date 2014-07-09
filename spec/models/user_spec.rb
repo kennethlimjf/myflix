@@ -7,6 +7,7 @@ describe User do
   it { should validate_uniqueness_of :email }
   it { should validate_presence_of :password }
   it { should validate_confirmation_of :password }
+  it { should ensure_length_of(:password).is_at_least(8) }
   it { should validate_presence_of :full_name }
   it { should have_many(:reviews).order('created_at DESC') }
   it { should have_many(:queue_items).order('list_order ASC') }
@@ -144,6 +145,21 @@ describe User do
       user.follow(u3)
       user.unfollow(u4)
       expect(user.follow_users).to eq [u1,u2,u3]   
+    end
+  end
+
+  describe '#generate_token' do
+    it 'should generate a token for the user' do
+      user.generate_token
+      expect(user.reload.token).not_to be_nil
+    end
+  end
+
+  describe '#clear_token' do
+    it 'sets token to nil' do      
+      user.generate_token
+      user.clear_token
+      expect(user.reload.token).to be_nil
     end
   end
   

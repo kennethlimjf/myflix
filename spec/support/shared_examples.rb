@@ -11,3 +11,11 @@ shared_examples 'require sign in' do
     expect(flash[:notice]).not_to be_nil
   end
 end
+
+shared_examples 'require user be signed out' do
+  it 'redirects to root path if user is signed in' do
+    sign_in
+    action
+    expect(response).to redirect_to root_path
+  end
+end

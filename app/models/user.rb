@@ -11,8 +11,9 @@ class User < ActiveRecord::Base
   validates_presence_of :email
   validates_uniqueness_of :email
   
-  validates_presence_of :password
-  validates_confirmation_of :password
+  validates_presence_of :password, :on => :create
+  validates_confirmation_of :password, :on => :create
+  validates_length_of :password, minimum: 8
 
   validates_presence_of :full_name
 
@@ -33,5 +34,15 @@ class User < ActiveRecord::Base
 
   def unfollow(user)
     follow_users.destroy(user)
+  end
+
+  def generate_token
+    self.token = SecureRandom.urlsafe_base64
+    save(validate: false)
+  end
+
+  def clear_token
+    self.token = nil
+    save(validate: false)
   end
 end

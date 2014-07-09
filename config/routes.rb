@@ -12,6 +12,10 @@ Myflix::Application.routes.draw do
   get 'register', to: 'users#new', as: :register
   post 'register', to: 'users#create'
   resources :users, only: :show
+  get 'forgot-password', to: 'users#forgot_password', as: :forgot_password
+  post 'forgot-password', to: 'users#forgot_password_submit'
+  get 'reset-password', to: 'users#reset_password', as: :reset_password
+  patch 'reset-password', to: 'users#reset_password_submit'
 
   # Videos
   resources :videos, only: :show do
