@@ -11,6 +11,7 @@ Myflix::Application.routes.draw do
   # User
   get 'register', to: 'users#new', as: :register
   post 'register', to: 'users#create'
+  resources :users, only: :show
 
   # Videos
   resources :videos, only: :show do

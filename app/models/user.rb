@@ -16,4 +16,8 @@ class User < ActiveRecord::Base
     queue_items.each { |queue_item| return true if queue_item.video == video }
     false
   end
+
+  def videos_count
+    queue_items.count
+  end
 end
