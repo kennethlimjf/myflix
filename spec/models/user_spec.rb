@@ -99,7 +99,19 @@ describe User do
       user.follow(Fabricate(:user))
       user.follow(Fabricate(:user))
       expect(user.follow_users.count).to eq 5
-    end 
+    end
+
+    it 'should not add a follow relation if user is already following target' do
+      u1 = Fabricate(:user)
+      user.follow(u1)
+      user.follow(u1)
+      expect(user.follow_users.count).to eq 1
+    end
+
+    it 'should not add a follow relation to user self' do
+      user.follow(user)
+      expect(user.follow_users.count).to eq 0
+    end
   end
 
   describe '#unfollow' do

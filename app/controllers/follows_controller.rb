@@ -10,4 +10,10 @@ class FollowsController < ApplicationController
     current_user.unfollow(unfollow_user)
     redirect_to people_path
   end
+
+  def create
+    follow_user = User.find(params[:id])
+    current_user.follow(follow_user)
+    redirect_to people_path
+  end
 end

@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   end
 
   def follow(user)
-    follow_users << user
+    follow_users << user unless follow_users.include?(user) || user == self
   end
 
   def unfollow(user)

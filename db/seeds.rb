@@ -187,8 +187,9 @@ Video.create( title: "Ip Man 3",
 Category.create( name: "Oldies" )
 
 # Reviews
+another_user = Fabricate(:user)
 Video.first(2).each do |video|
-  [3,4,5].sample.times.map { Fabricate(:review, video: video, author: User.first) }
+  [3,4,5].sample.times.map { Fabricate(:review, video: video, author: another_user) }
 end
 
 

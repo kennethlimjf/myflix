@@ -34,6 +34,6 @@ Myflix::Application.routes.draw do
 
   # Follows
   get 'people', to: 'follows#index', as: :people
-  resources :follows, only: :destroy
+  resources :follows, only: [:create, :destroy]
   
 end

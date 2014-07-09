@@ -49,4 +49,18 @@ describe FollowsController do
     end
   end
 
+  describe 'POST create' do
+
+    it 'should create a user follow relation' do
+      current_user = User.find(session[:user_id])
+      follow_user = Fabricate(:user)
+      post :create, id: follow_user.id
+      expect(current_user.follow_users.include?(follow_user)).to be_truthy
+    end
+
+    it_behaves_like 'require sign in' do
+      let(:action) { post :create, id: 1 }
+    end
+  end
+
 end
