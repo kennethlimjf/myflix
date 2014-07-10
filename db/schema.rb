@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(version: 20140710063220) do
 
   create_table "videos", force: true do |t|
     t.string   "title"
-    t.string   "description"
+    t.text   "description"
     t.string   "large_cover_url"
     t.string   "small_cover_url"
     t.datetime "created_at"
