@@ -10,25 +10,12 @@ class ApplicationController < ActionController::Base
     !!current_user
   end
 
+  def expired_token
+    render 'shared/expired_token'
+  end
+
 
   protected
-    def register_user
-      @user = User.new(user_params)
-
-      if @user.save
-        begin
-          UserMailer.register_user(@user).deliver
-        rescue Net::SMTPAuthenticationError
-          flash[:error] = "Account created, however there is a problem with sending welcome email."
-        end
-        flash[:notice] = "Your new account has been created."
-      else
-        flash[:error] = "Please fill up the form correctly"
-      end
-      
-      @user
-    end
-
     def authorize_user
       unless logged_in?
         flash[:notice] = "You will need to sign in first."
@@ -42,10 +29,5 @@ class ApplicationController < ActionController::Base
         redirect_to root_path
       end
     end
-
-
-  private
-    def user_params
-      params.require(:user).permit(:email, :password, :full_name)
-    end
+    
 end

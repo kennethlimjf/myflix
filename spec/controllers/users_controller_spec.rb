@@ -195,4 +195,70 @@ describe UsersController do
       let(:action) { patch :reset_password_submit, new_password: "ad23", token: "123" }
     end
   end
+
+
+  describe 'GET join' do
+    it 'sets the @invitation variable' do
+      user = Fabricate(:user)
+      i = Fabricate(:invitation, inviter: user)
+      i.generate_token; i.save
+
+      get :join, token: i.token
+      expect(assigns(:invitation)).to eq i
+    end
+
+    it 'sets the @user variable' do
+      user = Fabricate(:user)
+      i = Fabricate(:invitation, inviter: user)
+      i.generate_token; i.save
+      
+      get :join, token: i.token
+      expect(assigns(:user)).to be_new_record
+    end
+
+    it 'sets the @token variable' do
+      user = Fabricate(:user)
+      i = Fabricate(:invitation, inviter: user)
+      i.generate_token; i.save
+      
+      get :join, token: i.token
+      expect(assigns(:token)).to be_present
+    end
+
+    it 'renders the join template' do
+      user = Fabricate(:user)
+      i = Fabricate(:invitation, inviter: user)
+      i.generate_token; i.save
+      
+      get :join, token: i.token
+      expect(response).to render_template :new
+    end
+
+    it 'redirects to expired token path when token not found' do
+      get :join, token: 'invalid_token'
+      expect(response).to redirect_to expired_token_path
+    end
+  end
+
+  describe 'POST join_submit' do
+
+    let!(:invitation) { Fabricate(:invitation, inviter: Fabricate(:user)).generate_token }
+    let(:post_valid_join_submit) { post :join_submit, token: invitation.token, user: { email: 'friend@test.com', password: 'password', full_name: "Joiner Smith"} }
+
+    it 'creates new user' do
+      post_valid_join_submit
+      expect(assigns(:user).persisted?).to be_truthy
+    end
+
+    it 'set user to follow inviter' do
+      post_valid_join_submit
+      expect(assigns(:user).follow_users.include?(invitation.inviter)).to be_truthy
+    end
+
+    it 'set inviter to follow user' do
+      post_valid_join_submit
+      expect(invitation.inviter.follow_users.include?(assigns(:user))).to be_truthy
+    end
+  end
+
 end

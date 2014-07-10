@@ -22,6 +22,7 @@
         - if logged_in?
           %ul.dropdown-menu(role="menu" aria-labelledby="dlabel")
             %li
+              = link_to "Invite a Friend", new_invitation_path
               = link_to "Account", user_path(current_user)
               %a(href="#") Plan and Billing
               = link_to "Sign Out", sign_out_path, method: :delete

@@ -7,4 +7,9 @@ module ApplicationHelper
     return false if user == current_user || current_user.follow_users.include?(user)
     true
   end
+
+  def register_join_path
+    return join_path if @token
+    return register_path
+  end
 end

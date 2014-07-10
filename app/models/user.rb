@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   has_many :followers, class_name: "Follow", foreign_key: "follow_user_id"
   has_many :follower_users, through: :followers, source: :user
 
+  has_many :invitations, foreign_key: "inviter_id"
+
   has_many :reviews, -> { order("created_at DESC") }
   has_many :queue_items, -> { order("list_order ASC") }
 

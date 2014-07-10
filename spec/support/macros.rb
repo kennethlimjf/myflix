@@ -17,3 +17,7 @@ def user_sign_in(user)
   fill_in :password, with: user.password
   click_button "Sign in" 
 end
+
+def user_sign_out
+  click_link "Sign Out"
+end

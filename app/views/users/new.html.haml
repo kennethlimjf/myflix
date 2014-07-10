@@ -1,12 +1,13 @@
 %section.register.container
   .row
     .col-sm-10.col-sm-offset-1
-      = form_for @user, url: register_path, method: 'post', builder: RegisterFormBuilder, html: { class: "form-horizontal" } do |f|
+      = form_for @user, url: register_join_path, method: 'post', builder: RegisterFormBuilder, html: { class: "form-horizontal" } do |f|
         %header
           %h1 Register
         %section.error-notice
           = render 'shared/form_errors', obj: @user
         %fieldset
+          = hidden_field_tag :token, @token
           = f.form_group_tag :email do
             = f.label :email, "Email Address", class: "control-label col-sm-2"
             .col-sm-6

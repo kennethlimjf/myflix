@@ -56,4 +56,56 @@ class UsersController < ApplicationController
     redirect_to sign_in_path
   end
 
+  def join
+    @invitation = Invitation.find_by( token: params[:token] )
+
+    if @invitation
+      @token = @invitation.token
+      @user = User.new
+      @user.email = @invitation.email
+      render :new
+    else
+      redirect_to expired_token_path
+    end
+  end
+
+  def join_submit
+    @invitation = Invitation.find_by( token: params[:token] )    
+    
+    if @invitation
+      @user = register_user
+
+      if @user.persisted?
+        @invitation.inviter.follow(@user)
+        @user.follow(@invitation.inviter)
+        @invitation.update_attribute(:token, nil)
+        redirect_to root_path
+      else
+        render :new
+      end
+
+    end
+  end
+
+  private
+    def register_user
+      @user = User.new(user_params)
+
+      if @user.save
+        begin
+          UserMailer.register_user(@user).deliver
+        rescue Net::SMTPAuthenticationError
+          flash[:error] = "Account created, however there is a problem with sending welcome email."
+        end
+        flash[:notice] = "Your new account has been created."
+      else
+        flash[:error] = "Please fill up the form correctly"
+      end
+      
+      @user
+    end
+
+    def user_params
+      params.require(:user).permit(:email, :password, :full_name)
+    end
 end

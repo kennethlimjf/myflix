@@ -9,6 +9,7 @@ describe User do
   it { should validate_confirmation_of :password }
   it { should ensure_length_of(:password).is_at_least(8) }
   it { should validate_presence_of :full_name }
+  it { should have_many(:invitations) }
   it { should have_many(:reviews).order('created_at DESC') }
   it { should have_many(:queue_items).order('list_order ASC') }
 

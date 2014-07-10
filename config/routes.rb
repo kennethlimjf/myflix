@@ -16,6 +16,8 @@ Myflix::Application.routes.draw do
   post 'forgot-password', to: 'users#forgot_password_submit'
   get 'reset-password', to: 'users#reset_password', as: :reset_password
   patch 'reset-password', to: 'users#reset_password_submit'
+  get 'join/:token', to: 'users#join', as: :join
+  post 'join/:token', to: 'users#join_submit'
 
   # Videos
   resources :videos, only: :show do
@@ -41,9 +43,9 @@ Myflix::Application.routes.draw do
   resources :follows, only: [:create, :destroy]
   
   # Invites
-  get 'invite', to: 'invites#new', as: :new_invite
-  post 'invite', to: 'invites#invite_submit'
-  get 'join', to: 'invites#join', as: :join
-  post 'join', to: 'invites#join_submit'
+  resources :invitations, only: [:new, :create]
+
+  # Expired token path
+  get 'expired-token', to: 'application#expired_token', as: :expired_token
   
 end
