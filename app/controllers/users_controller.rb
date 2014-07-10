@@ -78,7 +78,7 @@ class UsersController < ApplicationController
       if @user.persisted?
         @invitation.inviter.follow(@user)
         @user.follow(@invitation.inviter)
-        @invitation.update_attribute(:token, nil)
+        @invitation.clear_token
         redirect_to root_path
       else
         render :new

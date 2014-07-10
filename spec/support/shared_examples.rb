@@ -19,3 +19,17 @@ shared_examples 'require user be signed out' do
     expect(response).to redirect_to root_path
   end
 end
+
+
+shared_examples 'tokenable' do
+  it 'should be able to generate token for object model' do
+    object.generate_token
+    expect(object.reload.token).not_to be_nil
+  end
+
+  it 'clears token for object model' do
+    object.generate_token
+    object.clear_token
+    expect(object.reload.token).to be_nil
+  end
+end

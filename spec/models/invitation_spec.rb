@@ -7,11 +7,7 @@ describe Invitation do
   it { should validate_presence_of(:email) }
   it { should validate_presence_of(:message) }
 
-  describe '#generate_token' do
-    it 'generates token for user' do
-      invitation = Fabricate.build(:invitation)
-      invitation.generate_token
-      expect(invitation.token).to be_present
-    end
-  end
+  it_behaves_like 'tokenable' do
+    let(:object) { Fabricate(:invitation, inviter: Fabricate(:user)) }
+  end 
 end

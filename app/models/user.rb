@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  include Tokenable
+
   has_many :follows
   has_many :follow_users, through: :follows
   
@@ -36,15 +38,5 @@ class User < ActiveRecord::Base
 
   def unfollow(user)
     follow_users.destroy(user)
-  end
-
-  def generate_token
-    self.token = SecureRandom.urlsafe_base64
-    save(validate: false)
-  end
-
-  def clear_token
-    self.token = nil
-    save(validate: false)
   end
 end

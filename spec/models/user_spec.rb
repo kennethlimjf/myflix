@@ -149,19 +149,7 @@ describe User do
     end
   end
 
-  describe '#generate_token' do
-    it 'should generate a token for the user' do
-      user.generate_token
-      expect(user.reload.token).not_to be_nil
-    end
-  end
-
-  describe '#clear_token' do
-    it 'sets token to nil' do      
-      user.generate_token
-      user.clear_token
-      expect(user.reload.token).to be_nil
-    end
-  end
-  
+  it_behaves_like 'tokenable' do
+    let(:object) { Fabricate(:user) }
+  end  
 end
