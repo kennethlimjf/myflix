@@ -10,6 +10,8 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'bcrypt'
 gem 'fabrication'
+gem 'faker'
+gem 'pg'
 
 group :development do
   gem 'sqlite3'
@@ -19,13 +21,11 @@ group :development do
   gem "better_errors"
   gem "binding_of_caller"
   gem 'letter_opener'
-  gem 'pg'
 end
 
 group :development, :test do
   gem 'rspec-rails', '= 2.99'
   gem 'shoulda-matchers', require: false
-  gem 'faker'
   gem 'capybara'
   gem 'launchy'
   gem 'capybara-email'
@@ -36,7 +36,6 @@ group :test do
 end
 
 group :production do
-  gem 'pg'
   gem 'rails_12factor'
 end
 
