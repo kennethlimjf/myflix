@@ -9,6 +9,7 @@ gem 'sass-rails'
 gem 'uglifier'
 gem 'jquery-rails'
 gem 'bcrypt'
+gem 'fabrication'
 
 group :development do
   gem 'sqlite3'
@@ -24,7 +25,6 @@ end
 group :development, :test do
   gem 'rspec-rails', '= 2.99'
   gem 'shoulda-matchers', require: false
-  gem 'fabrication'
   gem 'faker'
   gem 'capybara'
   gem 'launchy'
