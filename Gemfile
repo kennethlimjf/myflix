@@ -15,6 +15,7 @@ gem 'pg'
 gem 'sidekiq'
 gem 'unicorn'
 
+
 group :development do
   gem 'sqlite3'
   gem 'pry'
@@ -39,5 +40,6 @@ end
 
 group :production do
   gem 'rails_12factor'
+  gem "sentry-raven"
 end
 
