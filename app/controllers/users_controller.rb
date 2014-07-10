@@ -7,18 +7,11 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    @user = register_user
 
-    if @user.save
-      begin
-        UserMailer.register_user(@user).deliver
-      rescue Net::SMTPAuthenticationError
-        flash[:error] = "Account created, however there is a problem with sending welcome email."
-      end
-      flash[:notice] = "Your new account has been created."
+    if @user.persisted?
       redirect_to root_path
     else
-      flash[:error] = "Please fill up the form correctly"
       render :new
     end
   end
@@ -63,9 +56,4 @@ class UsersController < ApplicationController
     redirect_to sign_in_path
   end
 
-
-  private
-    def user_params
-      params.require(:user).permit(:email, :password, :full_name)
-    end
 end

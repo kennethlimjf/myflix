@@ -1,0 +1,6 @@
+!!! 5
+%html{:lang => "en"}
+%body
+  %h1 Invitation from #{@inviter_name}
+  %p Click on the link below to join MyFliX!
+  %a{:href => "#{url_for(controller: "invites", action: "join", only_path: false)}?email=#{@email}&inviter_email=#{@inviter_email}"} Join Us

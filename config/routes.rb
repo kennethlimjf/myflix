@@ -40,4 +40,10 @@ Myflix::Application.routes.draw do
   get 'people', to: 'follows#index', as: :people
   resources :follows, only: [:create, :destroy]
   
+  # Invites
+  get 'invite', to: 'invites#new', as: :new_invite
+  post 'invite', to: 'invites#invite_submit'
+  get 'join', to: 'invites#join', as: :join
+  post 'join', to: 'invites#join_submit'
+  
 end
