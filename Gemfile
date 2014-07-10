@@ -14,6 +14,7 @@ gem 'faker'
 gem 'pg'
 gem 'sidekiq'
 gem 'unicorn'
+gem 'paratrooper'
 
 
 group :development do
