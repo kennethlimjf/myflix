@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     if user
       user.generate_token
       user = user.reload
-      UserMailer.forgot_password(user).deliver
+      UserMailer.delay.forgot_password(user)
       flash[:notice] = "We have sent an email to your inbox."
       redirect_to root_path
     else
