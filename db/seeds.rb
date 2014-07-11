@@ -183,8 +183,14 @@ Video.create( title: "Ip Man 3",
               category: c3 )
 
 
-# Category 4: 
-Category.create( name: "Oldies" )
+# Video with video url
+Video.create(title: 'IU - Wallpaper Patterns', description: "IU sings.",
+              large_cover_url: "/images/ip_man_3_large.jpg",
+              small_cover_url: "/images/thumbnails/ip_man_3.jpg",
+              video_url: 'https://s3-ap-southeast-1.amazonaws.com/movix/videos/IU+-+Wallpaper+Design.mp4',
+              category: c1 )
+
+
 
 # Reviews
 another_user = Fabricate(:user)
