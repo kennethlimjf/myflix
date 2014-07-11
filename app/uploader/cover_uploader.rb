@@ -8,7 +8,7 @@ class CoverUploader < CarrierWave::Uploader::Base
   end
 
   def store_dir
-    'uploads/cover'
+    'cover'
   end
 
   def extension_white_list
