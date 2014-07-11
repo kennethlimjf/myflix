@@ -1,6 +1,4 @@
-class QueueItemsController < ApplicationController
-  before_action :authorize_user 
-
+class QueueItemsController < AuthenticatedController
   def index
     @queue_items = current_user.queue_items
   end
@@ -28,7 +26,6 @@ class QueueItemsController < ApplicationController
   end
 
   def update_queue_items
-
     @queue_items = queue_items_params
     result = QueueItem.update_user_queue_items!(current_user, queue_items_params)
 

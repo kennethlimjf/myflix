@@ -1,6 +1,4 @@
-class VideosController <ApplicationController
-  before_action :authorize_user
-
+class VideosController < AuthenticatedController
   def show
     @video = Video.find(params[:id])
     @review = Review.new

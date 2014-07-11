@@ -1,6 +1,4 @@
-class InvitationsController < ApplicationController
-  before_action :authorize_user
-
+class InvitationsController < AuthenticatedController
   def new
     @invitation = Invitation.new
     @invitation.message = "Please join this really cool site!"

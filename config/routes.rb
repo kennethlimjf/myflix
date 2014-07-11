@@ -47,5 +47,11 @@ Myflix::Application.routes.draw do
 
   # Expired token path
   get 'expired-token', to: 'application#expired_token', as: :expired_token
+
+
+  # Admin
+  namespace :admin do
+    resources :videos, only: [:new, :create]
+  end
   
 end

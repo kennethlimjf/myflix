@@ -1,5 +1,5 @@
-class MainController < ApplicationController
-  before_action :authorize_user, except: [:front]
+class MainController < AuthenticatedController
+  before_action :require_sign_in, except: [:front]
   
   def front
     redirect_to home_path if current_user

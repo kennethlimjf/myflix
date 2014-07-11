@@ -1,6 +1,4 @@
-class FollowsController < ApplicationController
-  before_action :authorize_user
-
+class FollowsController < AuthenticatedController
   def index
     @follow_users = current_user.follow_users
   end

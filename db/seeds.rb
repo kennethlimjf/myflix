@@ -1,5 +1,5 @@
 # User
-user = User.create( email: "admin@admin.com", password: "adminadmin", full_name: "Admin")
+user = User.create( email: "admin@admin.com", password: "adminadmin", full_name: "Admin", admin: true)
 
 # Category 1: TV Dramas
 c1 = Category.create( name: "TV Dramas" )

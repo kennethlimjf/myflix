@@ -15,6 +15,7 @@ gem 'pg'
 gem 'sidekiq'
 gem 'unicorn'
 gem 'paratrooper'
+gem 'bootstrap_form'
 
 
 group :development do
