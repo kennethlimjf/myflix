@@ -28,4 +28,8 @@
               = f.error_tag :full_name
         %fieldset.actions.control-group.col-sm-offset-2
           .controls
-            = f.submit "Sign Up", class: "btn btn-default"
+            %script(src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="#{Rails.configuration.stripe[:publishable_key]}"
+                    data-amount="999"
+                    data-description="Movix 1 time payment $9.99"
+                    data-name="Movix")

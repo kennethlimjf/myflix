@@ -7,10 +7,16 @@ class UsersController < AuthenticatedController
   end
 
   def create
-    @user = register_user
+    @user = User.new(user_params)
 
-    if @user.persisted?
-      redirect_to root_path
+    if @user.valid?
+      charged = process_payment 
+      if charged
+        @user = register_user(@user) 
+        redirect_to root_path
+      else
+        render :new
+      end
     else
       render :new
     end
@@ -88,10 +94,28 @@ class UsersController < AuthenticatedController
   end
 
   private
-    def register_user
-      @user = User.new(user_params)
 
-      if @user.save
+    def process_payment
+      token = params[:stripeToken]
+
+      begin
+        charge = Stripe::Charge.create(
+          :amount => 999,
+          :currency => "usd",
+          :card => token,
+          :description => "#{user_params[:email]} has registered on Movix"
+        )
+      rescue Stripe::CardError => e
+        flash[:error] = e.message
+      end
+      
+      charge ? charge.paid : nil
+    end
+
+
+    def register_user user
+      
+      if user.save
         begin
           UserMailer.register_user(@user).deliver
         rescue Net::SMTPAuthenticationError
@@ -102,7 +126,7 @@ class UsersController < AuthenticatedController
         flash[:error] = "Please fill up the form correctly"
       end
       
-      @user
+      user
     end
 
     def user_params

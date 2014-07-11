@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/stripe/stripe-ruby
+  revision: 8bb6acfca9b20cc028410bc66e2ba0491fba3c7e
+  specs:
+    stripe (1.14.0)
+      json (~> 1.8.1)
+      mime-types (~> 1.25)
+      rest-client (~> 1.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -180,6 +189,9 @@ GEM
     redis-namespace (1.5.0)
       redis (~> 3.0, >= 3.0.4)
     rendezvous (0.0.2)
+    rest-client (1.7.1)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rspec-collection_matchers (1.0.0)
       rspec-expectations (>= 2.99.0.beta1)
     rspec-core (2.99.0)
@@ -283,6 +295,7 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq
   sqlite3
+  stripe!
   thin
   uglifier
   unicorn
