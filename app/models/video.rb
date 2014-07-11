@@ -1,5 +1,5 @@
 class Video < ActiveRecord::Base
-  # mount_uploader :cover, CoverUploader
+  mount_uploader :cover, CoverUploader
 
   belongs_to :category
   has_many :reviews, -> { order("created_at DESC") }
