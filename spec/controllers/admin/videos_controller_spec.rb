@@ -41,5 +41,47 @@ describe Admin::VideosController do
       get :new
       expect(assigns(:categories)).to eq Category.all
     end
+
+    it_behaves_like 'require admin' do
+      let(:action) { get :new }
+    end
+  end
+
+
+  describe 'POST create' do
+    before { set_current_user(admin) }
+    let(:admin) { Fabricate(:user, admin: true) }
+    let(:post_valid_create) { post :create, video: Fabricate.attributes_for(:video) }
+    let(:post_invalid_create) { post :create, video: { title: nil, description: nil, category_id: nil } }
+
+    it 'should redirect_to add new video page when added video' do
+      post_valid_create
+      expect(response).to redirect_to new_admin_video_path
+    end
+
+    it 'flash notice when added video' do
+      post_valid_create
+      expect(flash[:notice]).to be_present
+    end
+
+    it 'should render add new video page when fail to add video' do
+      post_invalid_create
+      expect(response).to render_template :new
+    end
+
+    it 'flash errors when fail to add video' do
+      post_invalid_create
+      expect(flash[:error]).to be_present
+    end
+
+    it 'set @categories variable when fail to add video' do
+      Fabricate(:category)
+      post_invalid_create      
+      expect(assigns(:categories)).to be_present
+    end
+
+    it_behaves_like 'require admin' do
+      let(:action) { post :create, video: Fabricate.attributes_for(:video) }
+    end
   end
 end

@@ -36,6 +36,7 @@ describe SessionsController do
         expect(response).to redirect_to home_path
       end
     end
+    
     context 'when user authentication is unsuccessful' do
       before { post :create, { email: "asd.asd.com", password: "asdasdasd" } }
       it 'flash error' do

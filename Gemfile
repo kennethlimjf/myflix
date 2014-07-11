@@ -16,7 +16,9 @@ gem 'sidekiq'
 gem 'unicorn'
 gem 'paratrooper'
 gem 'bootstrap_form'
-
+gem "fog", "~> 1.20", require: "fog/aws/storage"
+gem 'carrierwave'
+gem "mini_magick"
 
 group :development do
   gem 'sqlite3'
