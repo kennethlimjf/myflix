@@ -19,9 +19,10 @@ def user_sign_in(user)
   visit '/sign-in'
   fill_in :email, with: user.email
   fill_in :password, with: user.password
-  click_button "Sign in" 
+  click_button "Sign in"
 end
 
-def user_sign_out
+def user_sign_out(user)
+  click_on "Welcome, #{user.full_name}"
   click_link "Sign Out"
 end

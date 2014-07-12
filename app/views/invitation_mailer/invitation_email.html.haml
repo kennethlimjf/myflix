@@ -5,4 +5,4 @@
   %h4 Dear #{@invitation.name},
   %p= @invitation.message
   %p Click on the link below to join MyFliX!
-  %a{:href => "#{url_for(controller: "users", action: "join", token: "#{@invitation.token}", only_path: false)}"} Join Us
+  %a(href="#{@invitation_url}") Join Us

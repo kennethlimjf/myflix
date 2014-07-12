@@ -39,6 +39,8 @@ group :development, :test do
   gem 'capybara'
   gem 'launchy'
   gem 'capybara-email'
+  gem 'selenium-webdriver'
+  gem "capybara-webkit"
 end
 
 group :test do

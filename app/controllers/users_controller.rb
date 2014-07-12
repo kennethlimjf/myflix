@@ -10,13 +10,13 @@ class UsersController < AuthenticatedController
     @user = User.new(user_params)
 
     if @user.valid?
-      response = process_payment 
-      if response.successful?
+      charge = process_payment 
+      if charge.successful?
         @user = register_user(@user)
         flash[:notice] = "Your payment was successful. Your account has been created."
         redirect_to root_path
       else
-        flash[:error] = response.error_message
+        flash[:error] = charge.error_message
         render :new
       end
     else
@@ -37,7 +37,8 @@ class UsersController < AuthenticatedController
     if user
       user.generate_token
       user = user.reload
-      UserMailer.delay.forgot_password(user)
+      url = url_for(host: request.host_with_port, controller: 'users', action: 'reset_password', token: user.token)
+      UserMailer.delay.forgot_password(user, url)
       flash[:notice] = "We have sent an email to your inbox."
       redirect_to root_path
     else
@@ -79,24 +80,23 @@ class UsersController < AuthenticatedController
 
   def join_submit
     @invitation = Invitation.find_by( token: params[:token] )
-    @user = User.new(user_params)
     
     if @invitation
+      @user = User.new(user_params)
+
       if @user.valid?
-        response = process_payment
-        if response.successful?
+        charge = process_payment 
+        if charge.successful?
           @user = register_user(@user)
-          @invitation.inviter.follow(@user)
-          @user.follow(@invitation.inviter)
-          @invitation.clear_token
+          handle_invitation
           flash[:notice] = "Your payment was successful. Your account has been created."
           redirect_to root_path
         else
-          flash[:error] = response.error_message
+          flash[:error] = charge.error_message
           render :new
         end
       else
-        flash[:error] = @user.errors.full_messages.join(" ")
+        flash[:error] = "Please fill up the form correctly"
         render :new
       end
     else
@@ -115,6 +115,12 @@ class UsersController < AuthenticatedController
       )
     end
 
+    def handle_invitation
+      @invitation.inviter.follow(@user)
+      @user.follow(@invitation.inviter)
+      @invitation.clear_token
+    end
+
     def register_user user      
       if user.save
         begin
@@ -126,7 +132,6 @@ class UsersController < AuthenticatedController
       else
         flash[:error] = "Please fill up the form correctly"
       end
-      
       user
     end
 
