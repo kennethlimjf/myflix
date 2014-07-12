@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe UsersController do
 
+  before { Stripe.api_key = Rails.configuration.stripe[:secret_key] }
+  let(:card_number) { "4242424242424242" }
+  let(:valid_token) { Stripe::Token.create( :card => { :number => card_number, :exp_month => 7, :exp_year => 2020, :cvc => "123" } ).id }
+
   describe 'GET new' do
     it 'should set the @user variable' do
       get :new
@@ -16,46 +20,47 @@ describe UsersController do
 
   describe 'POST create' do
 
+    let(:post_valid_create) { post :create, user: { email: "admin@admin.com", password: "adminadmin", full_name: "Admin" }, stripeToken: valid_token }
     after { ActionMailer::Base.deliveries.clear }
 
     it 'receives params[:user]' do
-      post :create, user: { email: "admin@admin.com", password: "adminadmin", full_name: "Admin" }
+      post_valid_create
       expect(request.params[:user]).to eq( {"email"=>"admin@admin.com", "password"=>"adminadmin", "full_name"=>"Admin"} )
     end
 
     it_behaves_like 'require user be signed out' do
-      let(:action) { post :create, user: { email: "admin@admin.com", password: "adminadmin", full_name: "Admin" } }
+      let(:action) { post_valid_create }
     end
 
-    context 'if new user form input is valid' do
-      before { post :create, user: { email: "admin@admin.com", password: "adminadmin", full_name: "Admin" } }
-      it 'flash notice if user saves' do
-        expect(flash[:notice]).to eq "Your new account has been created."
-      end
-      it 'redirects to root_path if user saves' do
-        expect(response).to redirect_to root_path
-      end
-      it 'sends email to user email address' do
-        post :create, user: { email: "admin@admin.com", password: "adminadmin", full_name: "Admin" }
-        expect(ActionMailer::Base.deliveries).not_to be_empty
-      end
-
-      it 'sends an email with the content "welcome"' do
-        post :create, user: { email: "admin@admin.com", password: "adminadmin", full_name: "Admin" }
-        message = ActionMailer::Base.deliveries.last
-        expect(message.body).to include('welcome')
-      end
-
-      it 'sends an email to the user email' do
-        post :create, user: { email: "admin@admin.com", password: "adminadmin", full_name: "Admin" }
-        message = ActionMailer::Base.deliveries.last
-        expect(message.to).to eq(['admin@admin.com'])
-      end
+    it 'flash notice if user saves' do
+      post_valid_create
+      expect(flash[:notice]).to eq "Your payment was successful. Your account has been created."
     end
 
+    it 'redirects to root_path if user saves' do
+      post_valid_create
+      expect(response).to redirect_to root_path
+    end
+
+    it 'sends email to user email address' do
+      post_valid_create
+      expect(ActionMailer::Base.deliveries).not_to be_empty
+    end
+
+    it 'sends an email with the content "welcome"' do
+      post_valid_create
+      message = ActionMailer::Base.deliveries.last
+      expect(message.body).to include('welcome')
+    end
+
+    it 'sends an email to the user email' do
+      post_valid_create
+      message = ActionMailer::Base.deliveries.last
+      expect(message.to).to eq(['admin@admin.com'])
+    end
 
     context 'when new user form input is invalid' do
-      before { post :create, user: { email: "admin@admin.com" } }
+      before { post :create, user: { email: "admin@admin.com" }, stripeToken: valid_token }
       it 'flash error if user does not save' do
         expect(flash[:error]).to eq "Please fill up the form correctly"
       end
@@ -243,7 +248,7 @@ describe UsersController do
   describe 'POST join_submit' do
 
     let!(:invitation) { Fabricate(:invitation, inviter: Fabricate(:user)).generate_token }
-    let(:post_valid_join_submit) { post :join_submit, token: invitation.token, user: { email: 'friend@test.com', password: 'password', full_name: "Joiner Smith"} }
+    let(:post_valid_join_submit) { post :join_submit, token: invitation.token, user: { email: 'friend@test.com', password: 'password', full_name: "Joiner Smith"}, stripeToken: valid_token }
 
     it 'creates new user' do
       post_valid_join_submit

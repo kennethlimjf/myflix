@@ -10,14 +10,17 @@ class UsersController < AuthenticatedController
     @user = User.new(user_params)
 
     if @user.valid?
-      charged = process_payment 
-      if charged
-        @user = register_user(@user) 
+      response = process_payment 
+      if response.successful?
+        @user = register_user(@user)
+        flash[:notice] = "Your payment was successful. Your account has been created."
         redirect_to root_path
       else
+        flash[:error] = response.error_message
         render :new
       end
     else
+      flash[:error] = "Please fill up the form correctly"
       render :new
     end
   end
@@ -27,7 +30,6 @@ class UsersController < AuthenticatedController
   end
 
   def forgot_password
-
   end
 
   def forgot_password_submit
@@ -76,45 +78,44 @@ class UsersController < AuthenticatedController
   end
 
   def join_submit
-    @invitation = Invitation.find_by( token: params[:token] )    
+    @invitation = Invitation.find_by( token: params[:token] )
+    @user = User.new(user_params)
     
     if @invitation
-      @user = register_user
-
-      if @user.persisted?
-        @invitation.inviter.follow(@user)
-        @user.follow(@invitation.inviter)
-        @invitation.clear_token
-        redirect_to root_path
+      if @user.valid?
+        response = process_payment
+        if response.successful?
+          @user = register_user(@user)
+          @invitation.inviter.follow(@user)
+          @user.follow(@invitation.inviter)
+          @invitation.clear_token
+          flash[:notice] = "Your payment was successful. Your account has been created."
+          redirect_to root_path
+        else
+          flash[:error] = response.error_message
+          render :new
+        end
       else
+        flash[:error] = @user.errors.full_messages.join(" ")
         render :new
       end
-
+    else
+      redirect_to expired_token_path
     end
   end
 
   private
-
     def process_payment
       token = params[:stripeToken]
-
-      begin
-        charge = Stripe::Charge.create(
-          :amount => 999,
-          :currency => "usd",
-          :card => token,
-          :description => "#{user_params[:email]} has registered on Movix"
-        )
-      rescue Stripe::CardError => e
-        flash[:error] = e.message
-      end
-      
-      charge ? charge.paid : nil
+      charge = StripeWrapper::Charge.create(
+        :amount => 999,
+        :currency => "usd",
+        :card => token,
+        :description => "#{user_params[:email]} has registered on Movix"
+      )
     end
 
-
-    def register_user user
-      
+    def register_user user      
       if user.save
         begin
           UserMailer.register_user(@user).deliver

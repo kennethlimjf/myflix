@@ -20,6 +20,8 @@ gem "fog", "~> 1.20", require: "fog/aws/storage"
 gem 'carrierwave'
 gem "mini_magick"
 gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
+# gem 'vcr'
+# gem 'webmock'
 
 group :development do
   gem 'sqlite3'
