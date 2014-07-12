@@ -38,7 +38,7 @@
           %article.review
             %li.row
               .col-sm-2
-                %span Rating: #{review.rating} / 5
+                %span Rating: #{review.decorate.rating}
                 %p by <a href="#{user_path(review.author)}">#{review.author.full_name}</a>
               .col-sm-8
                 %p= review.body

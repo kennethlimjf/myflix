@@ -11,6 +11,6 @@ class Video < ActiveRecord::Base
   end
 
   def average_rating
-    reviews.any? ? ( reviews.reduce(0){ |p, c| p + c.rating } ) / reviews.count : 0
+    reviews.any? ? ( reviews.reduce(0){ |p, c| p + c.rating } ) / reviews.count : nil
   end
 end
