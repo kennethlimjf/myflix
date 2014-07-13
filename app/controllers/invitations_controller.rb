@@ -8,7 +8,7 @@ class InvitationsController < AuthenticatedController
     @invitation = Invitation.new(invitation_params)
     @invitation.inviter = current_user
     @invitation.generate_token
-    @invitation_url = url_for(host: request.host_with_port, controller: 'users', action: 'join', token: @invitation.token)
+    @invitation_url = url_for(host: request.host_with_port, controller: 'users', action: 'create') + "/#{@invitation.token}"
 
     if @invitation.save
       InvitationMailer.invitation_email(current_user, @invitation, @invitation_url).deliver

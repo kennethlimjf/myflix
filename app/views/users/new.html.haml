@@ -5,7 +5,7 @@
 %section.register.container
   .row
     .col-sm-10.col-sm-offset-1
-      = form_for @user, url: register_join_path, method: 'post', builder: RegisterFormBuilder, html: { id: "payment-form", class: "form-horizontal" } do |f|
+      = form_for @user, url: register_path, method: 'post', builder: RegisterFormBuilder, html: { id: "payment-form", class: "form-horizontal" } do |f|
         %header
           %h1 Register
         %section.error-notice

@@ -9,15 +9,13 @@ Myflix::Application.routes.draw do
   get 'home', to: 'main#home', as: :home
 
   # User
-  get 'register', to: 'users#new', as: :register
+  get 'register(/:token)', to: 'users#new', as: :register
   post 'register', to: 'users#create'
   resources :users, only: :show
   get 'forgot-password', to: 'users#forgot_password', as: :forgot_password
   post 'forgot-password', to: 'users#forgot_password_submit'
   get 'reset-password', to: 'users#reset_password', as: :reset_password
   patch 'reset-password', to: 'users#reset_password_submit'
-  get 'join/:token', to: 'users#join', as: :join
-  post 'join/:token', to: 'users#join_submit'
 
   # Videos
   resources :videos, only: :show do

@@ -4,23 +4,37 @@ class UsersController < AuthenticatedController
 
   def new
     @user = User.new
+
+    if params[:token]
+      @invitation = Invitation.find_by( token: params[:token] )
+
+      if @invitation
+        @token = @invitation.token
+        @user.email = @invitation.email
+      else
+        redirect_to expired_token_path
+      end
+    end
   end
 
   def create
-    @user = User.new(user_params)
-
-    if @user.valid?
-      charge = process_payment 
-      if charge.successful?
-        @user = register_user(@user)
-        flash[:notice] = "Your payment was successful. Your account has been created."
-        redirect_to root_path
-      else
-        flash[:error] = charge.error_message
-        render :new
+    if params[:token] && !params[:token].empty?
+      @invitation = Invitation.find_by( token: params[:token] )
+      unless @invitation
+        redirect_to expired_token_path; return
       end
+    end
+
+    user_registration = UserRegistration.new( User.new(user_params), params[:stripeToken] )
+    user_registration.process
+    @user = user_registration.user
+
+    if user_registration.successful?
+      flash[:notice] = "Your payment was successful. Your account has been created."
+      handle_invitation if @invitation
+      redirect_to root_path
     else
-      flash[:error] = "Please fill up the form correctly"
+      flash[:error] = user_registration.error_message
       render :new
     end
   end
@@ -33,12 +47,10 @@ class UsersController < AuthenticatedController
   end
 
   def forgot_password_submit
-    user = User.find_by_email(params[:email])
-    if user
-      user.generate_token
-      user = user.reload
-      url = url_for(host: request.host_with_port, controller: 'users', action: 'reset_password', token: user.token)
-      UserMailer.delay.forgot_password(user, url)
+    forgot_password = ForgotPassword.new( User.find_by_email(params[:email]), self )
+    forgot_password.process
+
+    if forgot_password.successful?
       flash[:notice] = "We have sent an email to your inbox."
       redirect_to root_path
     else
@@ -65,74 +77,12 @@ class UsersController < AuthenticatedController
     redirect_to sign_in_path
   end
 
-  def join
-    @invitation = Invitation.find_by( token: params[:token] )
-
-    if @invitation
-      @token = @invitation.token
-      @user = User.new
-      @user.email = @invitation.email
-      render :new
-    else
-      redirect_to expired_token_path
-    end
-  end
-
-  def join_submit
-    @invitation = Invitation.find_by( token: params[:token] )
-    
-    if @invitation
-      @user = User.new(user_params)
-
-      if @user.valid?
-        charge = process_payment 
-        if charge.successful?
-          @user = register_user(@user)
-          handle_invitation
-          flash[:notice] = "Your payment was successful. Your account has been created."
-          redirect_to root_path
-        else
-          flash[:error] = charge.error_message
-          render :new
-        end
-      else
-        flash[:error] = "Please fill up the form correctly"
-        render :new
-      end
-    else
-      redirect_to expired_token_path
-    end
-  end
 
   private
-    def process_payment
-      token = params[:stripeToken]
-      charge = StripeWrapper::Charge.create(
-        :amount => 999,
-        :currency => "usd",
-        :card => token,
-        :description => "#{user_params[:email]} has registered on Movix"
-      )
-    end
-
     def handle_invitation
       @invitation.inviter.follow(@user)
       @user.follow(@invitation.inviter)
       @invitation.clear_token
-    end
-
-    def register_user user      
-      if user.save
-        begin
-          UserMailer.register_user(@user).deliver
-        rescue Net::SMTPAuthenticationError
-          flash[:error] = "Account created, however there is a problem with sending welcome email."
-        end
-        flash[:notice] = "Your new account has been created."
-      else
-        flash[:error] = "Please fill up the form correctly"
-      end
-      user
     end
 
     def user_params
