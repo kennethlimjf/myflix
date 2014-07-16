@@ -5,21 +5,21 @@ require 'spec_helper'
 describe UserRegistration do
 
   before do
-    charge = double('charge', successful?: true, error_message: nil)
-    StripeWrapper::Charge.stub(:create).and_return(charge)
+    subscription = double('subscription', subscription_id: 1, successful?: true)
+    StripeWrapper::Subscribe.stub(:create).and_return(subscription)
   end
   after { ActionMailer::Base.deliveries.clear }
   let(:user) { Fabricate.build(:user) }
 
-  it 'process payment when user is valid' do
-    StripeWrapper::Charge.should_receive(:create)
+  it 'subscribe when user is valid' do
+    StripeWrapper::Subscribe.should_receive(:create)
     ur = UserRegistration.new(user, 1)
     ur.process
   end
 
-  it 'does not process payment when user is invalid' do
+  it 'does not subscribe when user is invalid' do
     user.email = nil
-    StripeWrapper::Charge.should_not_receive(:create)
+    StripeWrapper::Subscribe.should_not_receive(:create)
     ur = UserRegistration.new(user, 1)
     ur.process
   end
@@ -31,16 +31,22 @@ describe UserRegistration do
     expect(ur.error_message).to eq "Please fill up user form correctly"
   end
 
-  it 'register user when charge is successful' do
-    StripeWrapper::Charge.should_receive(:create)
+  it 'sets the user subscription id' do
+    ur = UserRegistration.new(user, 1)
+    ur.process
+    expect(ur.user.subscription_id).to be_present
+  end
+
+  it 'register user when subscription is successful' do
+    StripeWrapper::Subscribe.should_receive(:create)
     UserRegistration.any_instance.should_receive(:register_user)
     ur = UserRegistration.new(user, 1)
     ur.process
   end
 
-  it 'show error_message when charge is unsuccessful' do
-    charge = double('charge', successful?: false, error_message: "Card is rejected")
-    StripeWrapper::Charge.stub(:create).and_return(charge)
+  it 'show error_message when subscription is unsuccessful' do
+    subscription = double('subscription', successful?: false, error_message: "Card is rejected")
+    StripeWrapper::Subscribe.stub(:create).and_return(subscription)
     ur = UserRegistration.new(user, 1)
     ur.process
     expect(ur.error_message).to eq "Card is rejected"
@@ -63,5 +69,7 @@ describe UserRegistration do
     ur.process
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.email]
   end
+
+
 
 end

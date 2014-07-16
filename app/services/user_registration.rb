@@ -11,11 +11,12 @@ class UserRegistration
 
   def process
     if @user.valid?
-      charge = process_payment 
-      if charge.successful?
+      subscription = subscribe 
+      if subscription.successful?
+        @user.subscription_id = subscription.subscription_id
         register_user
       else
-        @error_message = charge.error_message
+        @error_message = subscription.error_message
       end
     else
       @error_message = "Please fill up user form correctly"
@@ -47,5 +48,9 @@ class UserRegistration
         :card => @token,
         :description => "#{@user.email} has registered on Movix"
       )
+    end
+
+    def subscribe
+      subscription = StripeWrapper::Subscribe.create(card: @token, plan: 'regular', email: @user.email)
     end
 end
