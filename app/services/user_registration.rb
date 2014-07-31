@@ -13,7 +13,8 @@ class UserRegistration
     if @user.valid?
       subscription = subscribe 
       if subscription.successful?
-        @user.subscription_id = subscription.subscription_id
+        @user.stripe_customer_id = subscription.stripe_customer_id
+        @user.status = true
         register_user
       else
         @error_message = subscription.error_message

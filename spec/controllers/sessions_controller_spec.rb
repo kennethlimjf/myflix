@@ -16,7 +16,9 @@ describe SessionsController do
   end
 
   describe 'POST create' do
+
     let(:user) { Fabricate(:user, email: "admin@admin.com", password: "password") }
+    let(:invalid_user) { Fabricate(:user, email: "admin@admin.com", password: "password", status: false) }
 
     it 'receives the params email' do
       post :create, { email: "admin@admin.com", password: "password" }
@@ -28,12 +30,23 @@ describe SessionsController do
     end
 
     context 'when user authentication is successful' do
-      before { post :create, { email: user.email, password: user.password } }
-      it 'flash notice' do
+
+      it 'flash notice if user account status is valid' do
+        post :create, { email: user.email, password: user.password }
         expect(flash[:notice]).to eq "You have successfully signed in."
       end
-      it 'redirects to home_path' do
+      it 'redirects to home_path if user account status is valid' do
+        post :create, { email: user.email, password: user.password }
         expect(response).to redirect_to home_path
+      end
+
+      it 'flash error if user account status is invalid' do
+        post :create, { email: invalid_user.email, password: invalid_user.password }
+        expect(flash[:error]).to be_present
+      end
+      it 'renders new template if user account status is invalid' do
+        post :create, { email: invalid_user.email, password: invalid_user.password }
+        expect(response).to render_template :new
       end
     end
     

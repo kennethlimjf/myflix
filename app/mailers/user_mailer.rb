@@ -12,4 +12,9 @@ class UserMailer < ActionMailer::Base
     mail( to: @user.email, subject: "[MyFLix] Password Reset" )
   end
 
+  def account_deactivated(user)
+    @user = user
+    mail( to: @user.email, subject: "Account deactivated" )
+  end
+
 end

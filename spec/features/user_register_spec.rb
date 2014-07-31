@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User registers' do
+feature 'User registers', :vcr do
 
   background { visit_register_page }
 
@@ -8,42 +8,42 @@ feature 'User registers' do
   given(:declined_card_number) { '4000000000000002' }
   given(:invalid_card_number) { '4000000000000127' }
    
-  scenario 'user input valid and credit card is valid', js: true do
+  scenario 'user input valid and credit card is valid', :js do
     fill_in_valid_user_input
     fill_in_valid_credit_card
     click_button "Sign Up"
     expect(page).to have_content "Your payment was successful. Your account has been created."
   end
 
-  scenario 'user input valid and credit card is valid but declined', js: true  do
+  scenario 'user input valid and credit card is valid but declined', :js  do
     fill_in_valid_user_input
     fill_in_declined_credit_card
     click_button "Sign Up"
     expect(page).to have_content "Your card was declined"
   end
 
-  scenario 'user input valid and credit card is invalid', js: true  do
+  scenario 'user input valid and credit card is invalid', :js  do
     fill_in_valid_user_input
     fill_in_invalid_credit_card
     click_button "Sign Up"
     expect(page).to have_content "Your card's security code is incorrect"
   end
 
-  scenario 'user input valid and credit card is valid', js: true do
+  scenario 'user input valid and credit card is valid', :js do
     fill_in_invalid_user_input
     fill_in_valid_credit_card
     click_button "Sign Up"
     expect(page).to have_content "Please fill up the form correctly"
   end
 
-  scenario 'user input valid and credit card is valid but declined', js: true  do
+  scenario 'user input valid and credit card is valid but declined', :js  do
     fill_in_invalid_user_input
     fill_in_declined_credit_card
     click_button "Sign Up"
     expect(page).to have_content "Please fill up the form correctly"
   end
 
-  scenario 'user input valid and credit card is invalid', js: true  do
+  scenario 'user input valid and credit card is invalid', :js  do
     fill_in_invalid_user_input
     fill_in_invalid_credit_card
     click_button "Sign Up"

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe UserRegistration do
 
   before do
-    subscription = double('subscription', subscription_id: 1, successful?: true)
+    subscription = double('subscription', stripe_customer_id: 1, successful?: true)
     StripeWrapper::Subscribe.stub(:create).and_return(subscription)
   end
   after { ActionMailer::Base.deliveries.clear }
@@ -31,10 +31,16 @@ describe UserRegistration do
     expect(ur.error_message).to eq "Please fill up user form correctly"
   end
 
-  it 'sets the user subscription id' do
+  it 'sets the user stripe customer id' do
     ur = UserRegistration.new(user, 1)
     ur.process
-    expect(ur.user.subscription_id).to be_present
+    expect(ur.user.stripe_customer_id).to be_present
+  end
+
+  it 'sets the user status to true' do
+    ur = UserRegistration.new(user, 1)
+    ur.process
+    expect(ur.user.status).to be_truthy
   end
 
   it 'register user when subscription is successful' do
@@ -69,7 +75,4 @@ describe UserRegistration do
     ur.process
     expect(ActionMailer::Base.deliveries.last.to).to eq [user.email]
   end
-
-
-
 end

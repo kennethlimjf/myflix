@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StripeWrapper do
+describe StripeWrapper, :vcr do
 
   before { Stripe.api_key = Rails.configuration.stripe[:secret_key] }
   let(:valid_token) { Stripe::Token.create( :card => { :number => card_number, :exp_month => 7, :exp_year => 2020, :cvc => "123" } ).id }
@@ -46,10 +46,10 @@ describe StripeWrapper do
         response = StripeWrapper::Subscribe.create(card: card, plan: plan, email: email)
         expect(response.error_message).to be_nil
       end
-      it 'response should have an id' do
+      it 'response should have a stripe customer id' do
         card, plan, email = valid_token, 'regular', 'test@test.com'
         response = StripeWrapper::Subscribe.create(card: card, plan: plan, email: email)
-        expect(response.subscription_id).to be_present
+        expect(response.stripe_customer_id).to be_present
       end
     end
 

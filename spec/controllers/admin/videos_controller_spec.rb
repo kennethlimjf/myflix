@@ -59,6 +59,10 @@ describe Admin::VideosController do
       expect(response).to redirect_to new_admin_video_path
     end
 
+    it 'should create a video' do
+      expect{ post_valid_create }.to change(Video, :count).by(1)
+    end
+
     it 'flash notice when added video' do
       post_valid_create
       expect(flash[:notice]).to be_present

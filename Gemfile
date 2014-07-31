@@ -21,8 +21,7 @@ gem 'carrierwave'
 gem "mini_magick"
 gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
 gem 'draper'
-# gem 'vcr'
-# gem 'webmock'
+gem 'stripe_event'
 
 group :development do
   gem 'sqlite3'
@@ -46,6 +45,8 @@ end
 
 group :test do
   gem 'database_cleaner', '1.2.0'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :production do

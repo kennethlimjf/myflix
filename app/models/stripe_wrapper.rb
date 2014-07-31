@@ -51,7 +51,7 @@ module StripeWrapper
       end
     end
 
-    def subscription_id
+    def stripe_customer_id
       response.id
     end
 

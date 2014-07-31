@@ -24,7 +24,7 @@ class UsersController < AuthenticatedController
         redirect_to expired_token_path; return
       end
     end
-
+    
     user_registration = UserRegistration.new( User.new(user_params), params[:stripeToken] )
     user_registration.process
     @user = user_registration.user

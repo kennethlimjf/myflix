@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User invites friend', js: true do 
+feature 'User invites friend', :js, :vcr do 
   scenario 'Alice invites bob to MyFlix, Bob registers an account with token' do
     alice = Fabricate(:user)
     bob_name = "Bob"
